@@ -59,8 +59,7 @@ public class TransactionShould {
     @Test
     public void retrieve_all_the_unique_cities_where_traders_work (){
         List<String> uniqueCities = transactions.stream()
-                                                .map(p->p.getTrader()
-                                                .getCity())
+                                                .map(p->p.getTrader().getCity())
                                                 .distinct()
                                                 .collect(Collectors.toList());
         List<String> expected = Arrays.asList("Cambridge","Milan");
