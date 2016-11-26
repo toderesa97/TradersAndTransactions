@@ -36,4 +36,13 @@ public class Transaction {
                 (value == ((Transaction)o).value) &&
                 (trader.equals(((Transaction)o).getTrader()));
     }
+
+    @Override
+    public int hashCode(){
+        int hash = 1;
+        hash = 7*hash+trader.hashCode();
+        hash = 83*hash+year;
+        hash = 37*hash+value;
+        return hash;
+    }
 }

@@ -29,4 +29,13 @@ public class Trader {
     public boolean equals(Object o) {
         return (city.equals(((Trader)o).city))&&(name.equals(((Trader)o).name));
     }
+
+    @Override
+    public int hashCode(){
+        int hash=1;
+        hash=hash*17+name.hashCode();
+        hash=hash*13+city.hashCode();
+
+        return hash;
+    }
 }

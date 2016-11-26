@@ -3,8 +3,10 @@ import tradersTransaction.Trader;
 import tradersTransaction.Transaction;
 
 import java.util.*;
+import java.util.concurrent.SynchronousQueue;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -56,10 +58,12 @@ public class TransactionShould {
         assertEquals(expected, obtained);
     }
 
+
     @Test
     public void retrieve_all_the_unique_cities_where_traders_work (){
         List<String> uniqueCities = transactions.stream()
-                                                .map(p->p.getTrader().getCity())
+                                                .map(p->p.getTrader()
+                                                .getCity())
                                                 .distinct()
                                                 .collect(Collectors.toList());
         List<String> expected = Arrays.asList("Cambridge","Milan");
@@ -135,6 +139,10 @@ public class TransactionShould {
         Transaction smallestTransaction = transactions.stream().reduce(
                 (t1, t2)->t1.getValue() < t2.getValue() ? t1:t2
         ).get();
+
+        double a = DoubleStream.iterate(1,i->i+1).limit(1000).sum();
+
+
 
         assertEquals(expected,smallestTransaction);
     }

@@ -1,6 +1,9 @@
 import org.junit.Test;
 import tradersTransaction.Trader;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 import static junit.framework.TestCase.assertEquals;
 
 /**
