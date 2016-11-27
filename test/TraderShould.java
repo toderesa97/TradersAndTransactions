@@ -22,6 +22,6 @@ public class TraderShould {
 
     @Test
     public void print_as_is_expected_a_String_representation (){
-        assertEquals("Trader:"+DEFAULT_NAME+" in "+DEFAULT_CITY,trader.toString());
+        assertEquals(String.format("Trader:%s in %s",DEFAULT_NAME,DEFAULT_CITY),trader.toString());
     }
 }

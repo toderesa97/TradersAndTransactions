@@ -62,8 +62,7 @@ public class TransactionShould {
     @Test
     public void retrieve_all_the_unique_cities_where_traders_work (){
         List<String> uniqueCities = transactions.stream()
-                                                .map(p->p.getTrader()
-                                                .getCity())
+                                                .map(Transaction::getTraderCity)
                                                 .distinct()
                                                 .collect(Collectors.toList());
         List<String> expected = Arrays.asList("Cambridge","Milan");
@@ -74,11 +73,11 @@ public class TransactionShould {
 
     @Test
     public void retrieve_all_traders_from_a_city_and_sort_em_by_name (){
-        Comparator<String> sortByName = (String t1,String t2) -> t1.compareTo(t2);
+        //Comparator<String> sortByName = (String t1,String t2) -> t1.compareTo(t2);
         List<String> obtained = transactions.stream()
-                                            .filter(city->city.getTrader().getCity().equals("Cambridge"))
-                                            .map(p->p.getTrader().getName())
-                                            .sorted(sortByName)
+                                            .filter(transaction->transaction.getTraderCity().equals("Cambridge"))
+                                            .map(Transaction::getTraderName)
+                                            .sorted(String::compareTo)
                                             .collect(Collectors.toList());
         List<String> expected = Arrays.asList("Alan","Brian","Raoul","Raoul");
 
@@ -88,7 +87,7 @@ public class TransactionShould {
     @Test
     public void retrieve_a_String_representation_of_all_traders_name_sorted_alphabetically (){
         String obtained = transactions.stream()
-                          .map(Transaction::getTrader).map(Trader::getName)
+                          .map(Transaction::getTraderName)
                           .sorted(String::compareTo)
                           .collect(Collectors.joining(","));
 
@@ -100,7 +99,7 @@ public class TransactionShould {
     @Test
     public void retrieve_if_any_trader_is_based_in_a_city (){
         Boolean foundATraderInMilan = transactions.stream().
-                filter(transaction -> transaction.getTrader().getCity().equals("Milan")).count() > 0;
+                anyMatch(transaction -> transaction.getTraderCity().equals("Milan"));
         assertTrue(foundATraderInMilan);
 
     }
@@ -108,7 +107,7 @@ public class TransactionShould {
     @Test
     public void print_transactions_traders_values_from_a_city (){
         String obtained = transactions.stream()
-                            .filter(city->city.getTrader().getCity().equals("Cambridge"))
+                            .filter(transaction->transaction.getTraderCity().equals("Cambridge"))
                             .map(Transaction::getValue)
                             .map(String::valueOf)
                             .collect(Collectors.joining(","));
@@ -121,7 +120,16 @@ public class TransactionShould {
         IntSummaryStatistics statistics = transactions.stream()
                 .mapToInt(Transaction::getValue).summaryStatistics();
 
-        assertEquals(statistics.getMax(), 1000);
+        assertEquals(1000,statistics.getMax());
+
+        /** Using mapToInt */
+        int highestTransactionValue = transactions.stream()
+                .mapToInt(Transaction::getValue)
+                .max()
+                .getAsInt();
+
+        assertEquals(1000, highestTransactionValue);
+
     }
 
     @Test
@@ -130,19 +138,15 @@ public class TransactionShould {
                 .mapToInt(Transaction::getValue).summaryStatistics();
 
         Transaction transactionWithSmallestValue = transactions.stream().
-                filter(p->p.getValue()==statistics.getMin()).findAny().get();
+                filter(transaction->transaction.getValue()==statistics.getMin()).findAny().get();
         Transaction expected = new Transaction(brian, 2011, 300);
 
         assertEquals(expected, transactionWithSmallestValue);
 
         /** ANOTHER WAY: SOURCE: JAVA 8 IN ACTION */
-        Transaction smallestTransaction = transactions.stream().reduce(
-                (t1, t2)->t1.getValue() < t2.getValue() ? t1:t2
-        ).get();
-
-        double a = DoubleStream.iterate(1,i->i+1).limit(1000).sum();
-
-
+        Transaction smallestTransaction = transactions.stream()
+                .reduce((t1, t2)->t1.getValue() < t2.getValue() ? t1:t2)
+                .get();
 
         assertEquals(expected,smallestTransaction);
     }

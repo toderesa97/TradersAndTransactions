@@ -26,6 +26,10 @@ public class Transaction {
         return trader;
     }
 
+    public String getTraderName() {return trader.getName();}
+
+    public String getTraderCity(){return trader.getCity();}
+
     public String toString(){
         return "{"+trader+",year:"+year+",value:"+value+"}";
     }
